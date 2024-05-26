@@ -1,0 +1,28 @@
+name: "Import-to-DefectDojo"
+description: "Import scan results to DefectDojo"
+author: "hoainamnv34"
+inputs: 
+  host:
+    description: "Host of DefectDojo"
+    required: true
+  product:
+    description: "Product name"
+    required: true
+  engagement:
+    description: "Engagement name"
+    required: true
+  token:
+    description: "Token for import"
+    required: true
+runs:
+  using: 'docker'
+  image: 'Dockerfile'
+  args:
+  - --host 
+  - "${{ inputs.host }}" 
+  - --product 
+  - "${{ inputs.product }}"
+  - --engagement
+  - "${{ inputs.engagement }}" 
+  - --token
+  - "${{ inputs.token }}"
