@@ -1,3 +1,3 @@
 #!/bin/bash
 
-python3 evaluate.py --host "http://localhost:8080" --product "WebGoat App" --engagement "Test CI" --token "1313c9e54a7ab10774a92ccfb448884aebbcc93f"
+python3 evaluate.py --host "http://localhost:8080" --host "http://localhost:3001" --project_id 3 --pipeline_run_id 9649810810  --latest_request false

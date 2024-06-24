@@ -1,28 +1,31 @@
-name: "Import-to-DefectDojo"
-description: "Import scan results to DefectDojo"
+name: "Evaluate pipeline"
+description: "Get pipeline Evaluation from CVM"
 author: "hoainamnv34"
 inputs: 
-  host:
-    description: "Host of DefectDojo"
+ host:
+    description: "Host of CVM"
     required: true
-  product:
-    description: "Product name"
+  project_id:
+    description: "ID of Project In CVM"
     required: true
-  engagement:
-    description: "Engagement name"
+  pipeline_run_id:
+    description: "pipeline_run_id"
     required: true
-  token:
-    description: "Token for import"
+  latest_request:
+    description: "latest_request"
     required: true
+  # token:
+  #   description: "Token for import"
+  #   required: true
 runs:
   using: 'docker'
   image: 'Dockerfile'
   args:
   - --host 
   - "${{ inputs.host }}" 
-  - --product 
-  - "${{ inputs.product }}"
-  - --engagement
-  - "${{ inputs.engagement }}" 
-  - --token
-  - "${{ inputs.token }}"
+  - --project_id 
+  - "${{ inputs.project_id }}"
+  - --pipeline_run_id
+  - "${{ inputs.pipeline_run_id }}" 
+  - --latest_request
+  - "${{ inputs.latest_request }}"

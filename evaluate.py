@@ -4,47 +4,46 @@ import sys
 import argparse
 
 
+def str2bool(v):
+    if isinstance(v, bool):
+        return v
+    if v.lower() in ('yes', 'true', 't', 'y', '1'):
+        return True
+    elif v.lower() in ('no', 'false', 'f', 'n', '0'):
+        return False
+    elif v.lower() in ('none', 'null', ""):
+        return None
+    else:
+        raise argparse.ArgumentTypeError('Boolean value expected.')
+
 def fetchArguments():
     parse = argparse.ArgumentParser(description='Import scan results to DefectDojo')
     parse.add_argument('--host', dest='host')
-    parse.add_argument('--product', dest='product_name')
-    parse.add_argument('--engagement', dest='engagement_name')
-    parse.add_argument('--token', dest='token')
+    parse.add_argument('--project_id', dest='project_id')
+    parse.add_argument('--pipeline_run_id', dest='pipeline_run_id')
+    parse.add_argument('--latest_request', dest='latest_request',  type=str2bool)
 
     return parse.parse_args()   
 
-
-def get_product_id(product_name, token, url):
-    headers = {"Accept": "application/json", "Authorization": "Token " + token}
-
-    r = requests.get(url + '/api/v2/products',headers=headers)
-    if r.status_code != 200:
-        sys.exit(f'Get failed: {r.text}')
-    data = json.loads(r.text)
-    for product in data['results']:
-        if product['name'] == product_name:
-            return product['id']
         
 
-def evaluate(product_name, engagement_name, token, url):
-    product_id = get_product_id(product_name, token, url)
-    if not product_id:
-        sys.exit('[ERROR] Not found product')
-    else:
-        print('[INFO] Product ID:', product_id)
+def evaluate(host, project_id, pipeline_run_id, latest_request):
 
 
-    headers = {"Accept": "application/json", "Authorization": "Token " + token}
+    params = {
+        'project_id': project_id,
+        'pipeline_run_id': pipeline_run_id,
+        'latest_request': str(latest_request).lower()
+    }
+    headers = {'accept': 'application/json'}
+    url = f"{host}/api/pipeline-runs/evaluate"
 
-    r = requests.get(url + '/api/v2/engagements',headers=headers)
+    r = requests.get(url, headers=headers, params=params)
     if r.status_code != 200:
         sys.exit(f'Get failed: {r.text}')
     data = json.loads(r.text)
-    for engagement in data['results']:
-        if engagement['name'] == engagement_name:
-            if engagement['product'] == product_id:
-                if engagement['is_successful'] == False:
-                    sys.exit('[ERROR] The Pipeline failed')
+    if not data.get('data', {}).get('evaluate', True):
+        sys.exit(f'[ERROR] The Pipeline failed: {data.get("data")}')
     
 
 
@@ -52,4 +51,4 @@ if __name__ == "__main__":
     args = fetchArguments()
     print(args)
 
-    evaluate(args.product_name, args.engagement_name, args.token, args.host)
+    evaluate(args.host, args.project_id, args.pipeline_run_id, args.latest_request)
