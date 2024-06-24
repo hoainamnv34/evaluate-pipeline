@@ -2,7 +2,7 @@ name: "Evaluate pipeline"
 description: "Get pipeline Evaluation from CVM"
 author: "hoainamnv34"
 inputs: 
- host:
+  host:
     description: "Host of CVM"
     required: true
   project_id:
@@ -14,9 +14,6 @@ inputs:
   latest_request:
     description: "latest_request"
     required: true
-  # token:
-  #   description: "Token for import"
-  #   required: true
 runs:
   using: 'docker'
   image: 'Dockerfile'
