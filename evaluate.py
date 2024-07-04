@@ -20,20 +20,20 @@ def fetchArguments():
     parse = argparse.ArgumentParser(description='Import scan results to DefectDojo')
     parse.add_argument('--host', dest='host')
     parse.add_argument('--project_id', dest='project_id')
-    parse.add_argument('--pipeline_run_id', dest='pipeline_run_id')
-    parse.add_argument('--latest_request', dest='latest_request',  type=str2bool)
+    parse.add_argument('--run_id', dest='run_id')
+    parse.add_argument('--final_request', dest='final_request',  type=str2bool)
 
     return parse.parse_args()   
 
         
 
-def evaluate(host, project_id, pipeline_run_id, latest_request):
+def evaluate(host, project_id, run_id, final_request):
 
 
     params = {
         'project_id': project_id,
-        'pipeline_run_id': pipeline_run_id,
-        'latest_request': str(latest_request).lower()
+        'run_id': run_id,
+        'final_request': str(final_request).lower()
     }
     headers = {'accept': 'application/json'}
     url = f"{host}/api/pipeline-runs/evaluate"
@@ -51,4 +51,4 @@ if __name__ == "__main__":
     args = fetchArguments()
     print(args)
 
-    evaluate(args.host, args.project_id, args.pipeline_run_id, args.latest_request)
+    evaluate(args.host, args.project_id, args.run_id, args.final_request)
